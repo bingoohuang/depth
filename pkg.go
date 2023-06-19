@@ -102,6 +102,9 @@ func (p *Pkg) addDep(i Importer, name string, srcDir string, isTest bool) {
 	}
 	dep.Resolve(i)
 
+	if dep.Internal {
+		return
+	}
 	p.Deps = append(p.Deps, dep)
 }
 
