@@ -46,7 +46,9 @@ type Importer interface {
 type Tree struct {
 	Root *Pkg
 
-	OutputStdLib    bool
+	OutputStdLib bool
+	Version      bool
+
 	ResolveInternal bool
 	ResolveTest     bool
 	MaxDepth        int
