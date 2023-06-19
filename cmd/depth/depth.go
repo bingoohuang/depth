@@ -42,6 +42,7 @@ func parse(args []string) (*depth.Tree, []string) {
 	var t depth.Tree
 	f.BoolVar(&t.ResolveInternal, "internal", false, "If set, resolves dependencies of internal (stdlib) packages.")
 	f.BoolVar(&t.ResolveTest, "test", false, "If set, resolves dependencies used for testing.")
+	f.BoolVar(&t.OutputStdLib, "std", false, "If set, includes dependencies from the standard library.")
 	f.IntVar(&t.MaxDepth, "max", 0, "Sets the maximum depth of dependencies to resolve.")
 	f.BoolVar(&outputJSON, "json", false, "If set, outputs the depencies in JSON format.")
 	f.StringVar(&explainPkg, "explain", "", "If set, show which packages import the specified target")
