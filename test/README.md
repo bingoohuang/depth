@@ -1,6 +1,6 @@
 # Expectations vs. Outcomes
 
-Note: depth is being run in the root directory.
+A json version of the tree(s) below can be exported using `-json` flag.
 
 ## Current Behaviour
 
@@ -29,7 +29,7 @@ $ depth ./test
 ## Expected Behaviour | Stage 1 ✅
 
 ```bash
-$ depth ./test
+$ depth -std ./test
 ./test
   └ github.com/tidwall/gjson
     ├ github.com/tidwall/match
@@ -37,13 +37,13 @@ $ depth ./test
 3 dependencies (0 internal, 3 external, 0 testing).
 ```
 
-## Expected Behaviour | Stage 2
+## Expected Behaviour | Stage 2 ✅
 
 ```bash
-$ depth ./test
+$ depth -std -v ./test
 ./test
-  └ github.com/tidwall/gjson vX.X.X
-    ├ github.com/tidwall/match vX.X.X
-    └ github.com/tidwall/pretty vX.X.X
+  └ github.com/tidwall/gjson@v1.14.4
+    ├ github.com/tidwall/match@v1.1.1
+    └ github.com/tidwall/pretty@v1.2.0
 3 dependencies (0 internal, 3 external, 0 testing).
 ```
