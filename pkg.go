@@ -13,9 +13,10 @@ type Pkg struct {
 	Name   string `json:"name"`
 	SrcDir string `json:"-"`
 
-	Internal bool `json:"internal"`
-	Resolved bool `json:"resolved"`
-	Test     bool `json:"-"`
+	Version  string `json:"version"`
+	Internal bool   `json:"internal"`
+	Resolved bool   `json:"resolved"`
+	Test     bool   `json:"-"`
 
 	Tree   *Tree `json:"-"`
 	Parent *Pkg  `json:"-"`
@@ -48,6 +49,10 @@ func (p *Pkg) Resolve(i Importer) {
 		return
 	}
 	p.Raw = pkg
+
+	if p.Tree.Version {
+		p.Version = GetPackageVersion(pkg.Root)
+	}
 
 	// Update the name with the fully qualified import path.
 	p.Name = pkg.ImportPath
@@ -101,6 +106,11 @@ func (p *Pkg) addDep(i Importer, name string, srcDir string, isTest bool) {
 		Test:   isTest,
 	}
 	dep.Resolve(i)
+
+	// if flag is set, doesn't include stdlib packages into the tree
+	if p.Tree.OutputStdLib && dep.Internal {
+		return
+	}
 
 	p.Deps = append(p.Deps, dep)
 }
@@ -157,8 +167,23 @@ func (p *Pkg) String() string {
 	if !p.Resolved {
 		b.Write([]byte(" (unresolved)"))
 	}
+	
+	if p.Version != "" && p.Tree.Version {
+		b.Write([]byte("@" + p.Version))
+	}
 
 	return b.String()
+}
+
+// GetPackageVersion returns the version of a package if it is present in go.mod.
+func GetPackageVersion(pkg string) string {
+	if pkg == "" {
+		return ""
+	}
+	if strings.Contains(pkg, "@") {
+		return strings.Split(pkg, "@")[1]
+	}
+	return ""
 }
 
 // byInternalAndName ensures a slice of Pkgs are sorted such that the internal stdlib

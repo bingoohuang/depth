@@ -14,13 +14,15 @@ func Test_parse(t *testing.T) {
 		depth    int
 		json     bool
 		explain  string
+		version bool
+		OutputStdLib bool
 	}{
-		{true, true, 0, true, ""},
-		{false, false, 10, false, ""},
-		{true, false, 10, false, ""},
-		{false, true, 5, true, ""},
-		{false, true, 5, true, "github.com/KyleBanks/depth"},
-		{false, true, 5, true, ""},
+		{true, true, 0, true, "", true, true},
+		{false, false, 10, false, "", false, false},
+		{true, false, 10, false, "", true, true},
+		{false, true, 5, true, "", true, false},
+		{false, true, 5, true, "github.com/KyleBanks/depth", false, false},
+		{false, true, 5, true, "", true, true},
 	}
 
 	for idx, tt := range tests {
@@ -30,6 +32,8 @@ func Test_parse(t *testing.T) {
 			fmt.Sprintf("-max=%v", tt.depth),
 			fmt.Sprintf("-json=%v", tt.json),
 			fmt.Sprintf("-explain=%v", tt.explain),
+			fmt.Sprintf("-v=%v",tt.version),
+			fmt.Sprintf("-std=%v",tt.OutputStdLib),
 		})
 
 		if tr.ResolveInternal != tt.internal {
@@ -41,6 +45,10 @@ func Test_parse(t *testing.T) {
 		} else if outputJSON != tt.json {
 			t.Fatalf("[%v] Unexpected outputJSON, expected=%v, got=%v", idx, tt.json, outputJSON)
 		} else if explainPkg != tt.explain {
+			t.Fatalf("[%v] Unexpected explainPkg, expected=%v, got=%v", idx, tt.explain, explainPkg)
+		}  else if tr.Version != tt.version {
+			t.Fatalf("[%v] Unexpected explainPkg, expected=%v, got=%v", idx, tt.explain, explainPkg)
+		} else if tr.OutputStdLib != tt.OutputStdLib {
 			t.Fatalf("[%v] Unexpected explainPkg, expected=%v, got=%v", idx, tt.explain, explainPkg)
 		}
 	}
