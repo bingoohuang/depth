@@ -108,7 +108,7 @@ func (p *Pkg) addDep(i Importer, name string, srcDir string, isTest bool) {
 	dep.Resolve(i)
 
 	// if flag is set, doesn't include stdlib packages into the tree
-	if p.Tree.OutputStdLib && dep.Internal {
+	if !p.Tree.OutputStdLib && dep.Internal {
 		return
 	}
 
@@ -167,7 +167,7 @@ func (p *Pkg) String() string {
 	if !p.Resolved {
 		b.Write([]byte(" (unresolved)"))
 	}
-	
+
 	if p.Version != "" && p.Tree.Version {
 		b.Write([]byte("@" + p.Version))
 	}

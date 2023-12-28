@@ -29,6 +29,10 @@ type summary struct {
 
 func main() {
 	t, pkgs := parse(os.Args[1:])
+	if len(pkgs) == 0 {
+		pkgs = []string{"."}
+	}
+
 	if err := handlePkgs(t, pkgs, outputJSON, explainPkg); err != nil {
 		os.Exit(1)
 	}
@@ -42,10 +46,10 @@ func parse(args []string) (*depth.Tree, []string) {
 	var t depth.Tree
 	f.BoolVar(&t.ResolveInternal, "internal", false, "If set, resolves dependencies of internal (stdlib) packages.")
 	f.BoolVar(&t.ResolveTest, "test", false, "If set, resolves dependencies used for testing.")
-	f.BoolVar(&t.OutputStdLib, "std", false, "If set, excludes dependencies from the standard library.")
+	f.BoolVar(&t.OutputStdLib, "std", false, "If set, includes dependencies from the stdlib.")
 	f.BoolVar(&t.Version, "v", false, "If set, includes version of external dependencies.")
 	f.IntVar(&t.MaxDepth, "max", 0, "Sets the maximum depth of dependencies to resolve.")
-	f.BoolVar(&outputJSON, "json", false, "If set, outputs the depencies in JSON format.")
+	f.BoolVar(&outputJSON, "json", false, "If set, outputs the dependencies in JSON format.")
 	f.StringVar(&explainPkg, "explain", "", "If set, show which packages import the specified target")
 	f.Parse(args)
 
